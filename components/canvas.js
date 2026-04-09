@@ -1,50 +1,54 @@
 /**
  * Drawing Canvas Component
- * Final Fixes: Preview colors and mathematical Line Hit-testing
+ * Performance: RAF render loop, debounced resize, no polling.
  */
+import { showConfirm } from '../utils/confirm.js';
+
 export class DrawingCanvas {
     constructor(container, block, onUpdate) {
         this.container = container;
         this.block = block;
         this.onUpdate = onUpdate;
-        
+
         this.elements = block.elements || [];
         this.currentTool = 'pen';
         this.selectedColor = '#a5b4fc';
         this.isDrawing = false;
-        
+
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.rc = null; 
-        
+        this.rc = null;
+
         this.handleMove = (e) => this.draw(e);
         this.handleStop = () => this.stopDrawing();
+
+        // Debounced resize
+        this._resizeTimer = null;
+        this._boundResize = () => {
+            clearTimeout(this._resizeTimer);
+            this._resizeTimer = setTimeout(() => this.resize(), 150);
+        };
 
         this.init();
     }
 
     init() {
         this.container.innerHTML = '';
-        this.container.className = 'canvas-block glass-panel active-drawing-area';
-        // NO tabIndex — it steals focus from the actual canvas on first click
-        
+        this.container.className = 'canvas-block';
         this.container.style.position = 'relative';
-        this.container.style.backgroundColor = '#111';
-        this.container.style.minHeight = '440px';
-        this.container.style.cursor = 'crosshair';
-        
+
         this.canvas.style.display = 'block';
         this.canvas.style.touchAction = 'none';
 
         const toolbar = document.createElement('div');
         toolbar.className = 'canvas-toolbar';
         toolbar.innerHTML = `
-            <div class="tool-group" style="display: flex; gap: 4px;">
-                <button class="tool-btn active" data-tool="pen" title="Pen"><i data-lucide="pen" size="16"></i></button>
-                <button class="tool-btn" data-tool="rect" title="Rectangle"><i data-lucide="square" size="16"></i></button>
-                <button class="tool-btn" data-tool="circle" title="Circle"><i data-lucide="circle" size="16"></i></button>
-                <button class="tool-btn" data-tool="line" title="Line"><i data-lucide="minus" size="16"></i></button>
-                <button class="tool-btn" data-tool="eraser" title="Eraser"><i data-lucide="eraser" size="16"></i></button>
+            <div style="display: flex; gap: 2px;">
+                <button class="tool-btn active" data-tool="pen" title="Pen"><i data-lucide="pen" size="14"></i></button>
+                <button class="tool-btn" data-tool="rect" title="Rectangle"><i data-lucide="square" size="14"></i></button>
+                <button class="tool-btn" data-tool="circle" title="Circle"><i data-lucide="circle" size="14"></i></button>
+                <button class="tool-btn" data-tool="line" title="Line"><i data-lucide="minus" size="14"></i></button>
+                <button class="tool-btn" data-tool="eraser" title="Eraser"><i data-lucide="eraser" size="14"></i></button>
             </div>
             <div class="tool-divider"></div>
             <div class="color-palette">
@@ -52,33 +56,38 @@ export class DrawingCanvas {
                 <div class="color-btn" data-color="#fda4af" style="background: #fda4af;"></div>
                 <div class="color-btn" data-color="#6ee7b7" style="background: #6ee7b7;"></div>
                 <div class="color-btn" data-color="#fcd34d" style="background: #fcd34d;"></div>
-                <div class="color-btn" data-color="#ffffff" style="background: #ffffff;"></div>
+                <div class="color-btn" data-color="#94a3b8" style="background: #94a3b8;"></div>
             </div>
             <div class="tool-divider"></div>
-            <button class="tool-btn" data-tool="clear" title="Clear All"><i data-lucide="trash-2" size="16"></i></button>
+            <button class="tool-btn" data-tool="clear" title="Clear All"><i data-lucide="trash-2" size="14"></i></button>
         `;
-        
+
         this.container.appendChild(toolbar);
         this.container.appendChild(this.canvas);
 
         // Render Lucide icons
-        const renderIcons = () => {
-            if (window.lucide) window.lucide.createIcons();
-        };
-        renderIcons();
-        setTimeout(renderIcons, 300);
-        
+        if (window.lucide) window.lucide.createIcons();
+
         this.resize();
         this.setupListeners(toolbar);
-        
-        const checkRough = setInterval(() => {
-            if (window.rough) {
-                this.rc = window.rough.canvas(this.canvas);
-                this.render();
-                clearInterval(checkRough);
-            }
-        }, 100);
-        window.addEventListener('resize', () => this.resize());
+
+        // One-time check for roughjs
+        if (window.rough) {
+            this.rc = window.rough.canvas(this.canvas);
+            this.render();
+        } else {
+            // Wait for it — but with a max timeout
+            const checkRough = setInterval(() => {
+                if (window.rough) {
+                    this.rc = window.rough.canvas(this.canvas);
+                    this.render();
+                    clearInterval(checkRough);
+                }
+            }, 200);
+            setTimeout(() => clearInterval(checkRough), 5000); // Give up after 5s
+        }
+
+        window.addEventListener('resize', this._boundResize);
     }
 
     resize() {
@@ -86,6 +95,9 @@ export class DrawingCanvas {
         if (rect.width === 0) return;
         this.canvas.width = rect.width;
         this.canvas.height = rect.height || 440;
+        if (this.rc && window.rough) {
+            this.rc = window.rough.canvas(this.canvas);
+        }
         this.render();
     }
 
@@ -99,12 +111,22 @@ export class DrawingCanvas {
 
     setupListeners(toolbar) {
         toolbar.addEventListener('mousedown', e => e.stopPropagation());
-        toolbar.addEventListener('click', e => {
+        toolbar.addEventListener('click', async (e) => {
             const btn = e.target.closest('.tool-btn');
             if (btn) {
                 const tool = btn.dataset.tool;
                 if (tool === 'clear') {
-                    if (confirm('Clear everything?')) { this.elements = []; this.render(); this.save(); }
+                    const confirmed = await showConfirm({
+                        title: 'Clear canvas?',
+                        message: 'All drawings on this canvas will be permanently erased.',
+                        confirmText: 'Clear',
+                        danger: true
+                    });
+                    if (confirmed) {
+                        this.elements = [];
+                        this.render();
+                        this.save();
+                    }
                     return;
                 }
                 this.currentTool = tool;
@@ -158,23 +180,23 @@ export class DrawingCanvas {
     }
 
     eraseAt(pos) {
-        const threshold = 15; // Increased for easier hitting
+        const threshold = 15;
         const initialCount = this.elements.length;
-        
+
         this.elements = this.elements.filter(el => {
             if (el.tool === 'pen') {
                 return !el.points.some(p => Math.hypot(p.x - pos.x, p.y - pos.y) < threshold);
             }
             if (el.tool === 'line') {
-                return !this.isPointNearLine(pos, {x: el.x, y: el.y}, {x: el.x + el.width, y: el.y + el.height}, threshold);
+                return !this.isPointNearLine(pos, { x: el.x, y: el.y }, { x: el.x + el.width, y: el.y + el.height }, threshold);
             }
             if (el.tool === 'rect') {
-                return !(pos.x > el.x - threshold && pos.x < el.x + el.width + threshold && 
-                         pos.y > el.y - threshold && pos.y < el.y + el.height + threshold);
+                return !(pos.x > el.x - threshold && pos.x < el.x + el.width + threshold &&
+                    pos.y > el.y - threshold && pos.y < el.y + el.height + threshold);
             }
             if (el.tool === 'circle') {
                 const dist = Math.hypot(el.x - pos.x, el.y - pos.y);
-                const radius = Math.sqrt(el.width**2 + el.height**2);
+                const radius = Math.sqrt(el.width ** 2 + el.height ** 2);
                 return Math.abs(dist - radius) > threshold && dist > radius + threshold;
             }
             return true;
@@ -187,7 +209,7 @@ export class DrawingCanvas {
     }
 
     isPointNearLine(p, a, b, t) {
-        const L2 = (b.x - a.x)**2 + (b.y - a.y)**2;
+        const L2 = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
         if (L2 === 0) return Math.hypot(p.x - a.x, p.y - a.y) < t;
         let r = ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / L2;
         r = Math.max(0, Math.min(1, r));
@@ -213,9 +235,8 @@ export class DrawingCanvas {
     }
 
     renderElement(el, isPreview = false) {
-        // FIX: Respect selected color even in preview
         const color = el.color || '#a5b4fc';
-        
+
         if (!this.rc) {
             this.ctx.save();
             this.ctx.strokeStyle = color;
@@ -229,7 +250,7 @@ export class DrawingCanvas {
             } else if (el.tool === 'rect') {
                 this.ctx.rect(el.x, el.y, el.width, el.height);
             } else if (el.tool === 'circle') {
-                const radius = Math.sqrt(el.width**2 + el.height**2);
+                const radius = Math.sqrt(el.width ** 2 + el.height ** 2);
                 this.ctx.arc(el.x, el.y, radius, 0, Math.PI * 2);
             } else if (el.tool === 'line') {
                 this.ctx.moveTo(el.x, el.y);
@@ -249,7 +270,7 @@ export class DrawingCanvas {
                 this.rc.rectangle(el.x, el.y, el.width, el.height, options);
                 break;
             case 'circle':
-                const radius = Math.sqrt(el.width**2 + el.height**2);
+                const radius = Math.sqrt(el.width ** 2 + el.height ** 2);
                 this.rc.circle(el.x, el.y, radius * 2, options);
                 break;
             case 'line':
