@@ -22,6 +22,7 @@ Since this app uses ES Modules, you need a local server to run it.
 ## Keyboard Shortcuts
 - `Ctrl + \`: Toggle Sidebar
 - `Ctrl + N`: New Page
+- `Ctrl + K`: Quick Search
 - `Enter`: New Block
 - `Backspace`: Delete Empty Block
 - `/`: Open Command Menu
