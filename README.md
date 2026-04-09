@@ -1,8 +1,8 @@
-# Notexcali 🚀
+# Notexcali 📒
 
-A hybrid Notion + Excalidraw note-taking app.
+Notexcali is a simple and intuitive note-taking and drawing application that combines the power of text notes + sketching (like Excalidraw) in one place. It allows users to create, edit, and manage notes efficiently with a clean and user-friendly interface.
 
-## Features
+## Features 🚀
 - **Block-based Editor**: Type `/` for commands (Headings, Text, Canvas, etc.)
 - **Hand-drawn Canvas**: Sketch ideas directly in your notes using Rough.js.
 - **Local-first**: Data is saved in your browser's IndexedDB.
@@ -25,3 +25,17 @@ Since this app uses ES Modules, you need a local server to run it.
 - `Enter`: New Block
 - `Backspace`: Delete Empty Block
 - `/`: Open Command Menu
+
+## 📌 Future Improvements
+- 🔐 User authentication
+- ☁️ Cloud storage support
+- 📱 Mobile responsiveness
+- 🤝 Real-time collaboration
+- 🧠 AI-based note suggestions
+
+# 📄 License
+This project is licensed under the MIT License.
+
+# 👨‍💻 Author
+Avishkar Jadkar
+https://github.com/AvishkarJadkar
