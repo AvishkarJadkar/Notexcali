@@ -1202,6 +1202,7 @@ pre[class*="language-"] {
 
 .confirm-dialog {
     width: 380px;
+    max-width: calc(100vw - 32px);
     background: var(--bg-primary);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-lg);
