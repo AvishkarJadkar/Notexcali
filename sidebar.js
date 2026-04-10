@@ -114,6 +114,12 @@ export class Sidebar {
                 if (id && (id.startsWith('page-') || id === 'welcome-page')) {
                     this.state.set('currentPageId', id);
                     this.scheduleRender();
+                    
+                    // Auto-collapse on mobile
+                    if (window.innerWidth <= 768) {
+                        const sidebarGroup = document.getElementById('sidebar');
+                        if (sidebarGroup) sidebarGroup.classList.add('collapsed');
+                    }
                 }
             }
 

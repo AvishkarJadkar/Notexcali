@@ -41,6 +41,12 @@ class App {
             // 4. Single Lucide icons pass
             if (window.lucide) window.lucide.createIcons();
 
+            // Mobile: Collapse sidebar by default
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.add('collapsed');
+            }
+
             console.log('✨ Notexcali Ready!');
         } catch (err) {
             console.error('❌ Notexcali failed to initialize:', err);
