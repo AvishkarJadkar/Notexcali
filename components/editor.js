@@ -22,6 +22,7 @@ export class Editor {
 
         this.currentBlockId = null;
         this.canvases = new Map();
+        this.currentPage = null; // Autoritative in-memory state
 
         // Debounced save
         this._saveTimer = null;
@@ -53,6 +54,8 @@ export class Editor {
                 return;
             }
 
+            this.currentPage = page; // Store as authoritative source
+            
             // Update UI
             this.titleEl.innerText = page.title || 'Untitled';
             this.emojiEl.innerText = page.emoji || '📄';
@@ -285,6 +288,30 @@ export class Editor {
                     this.addBlockAfter(block.id);
                 }
 
+                // Markdown Shortcuts (*, -, 1.)
+                if (e.key === ' ') {
+                    const text = content.textContent.trim();
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        // Only transform if cursor is at the end of the shortcut
+                        if (range.startOffset === content.textContent.length) {
+                            if (text === '*' || text === '-') {
+                                e.preventDefault();
+                                block.content = '';
+                                this.transformBlock(block.id, 'bullet', '');
+                                return;
+                            }
+                            if (text === '1.') {
+                                e.preventDefault();
+                                block.content = '';
+                                this.transformBlock(block.id, 'number', '');
+                                return;
+                            }
+                        }
+                    }
+                }
+
                 // Slash command
                 if (e.key === '/') {
                     const selection = window.getSelection();
@@ -332,6 +359,8 @@ export class Editor {
             case 'h1': return 'Heading 1';
             case 'h2': return 'Heading 2';
             case 'h3': return 'Heading 3';
+            case 'bullet': return 'List';
+            case 'number': return 'List';
             default: return "Type '/' for commands...";
         }
     }
@@ -355,19 +384,30 @@ export class Editor {
         this._saveTimer = setTimeout(() => this.savePage(), this._saveDelay);
     }
 
-    async transformBlock(blockId, newType) {
+    async transformBlock(blockId, newType, newContent = null) {
+        if (!this.currentPage) return;
+        
         try {
-            const page = await db.getPage(this.state.get('currentPageId'));
-            if (!page) return;
-            const index = page.blocks.findIndex(b => b.id === blockId);
-
+            // 1. Sync current text from DOM to memory
+            this.syncState();
+            
+            // 2. Modify memory state
+            const index = this.currentPage.blocks.findIndex(b => b.id === blockId);
             if (index !== -1) {
-                const block = page.blocks[index];
+                const block = this.currentPage.blocks[index];
                 block.type = newType;
-                if (block.content === '/') block.content = '';
+                
+                if (newContent !== null) {
+                    block.content = newContent;
+                } else if (block.content === '/') {
+                    block.content = '';
+                }
 
-                await db.savePage(page);
-                this.renderBlocks(page.blocks);
+                // 3. Save memory state to DB
+                await db.savePage(this.currentPage);
+                
+                // 4. Re-render
+                this.renderBlocks(this.currentPage.blocks);
 
                 setTimeout(() => {
                     const el = this.container.querySelector(`[data-id="${blockId}"] .block-content`);
@@ -380,21 +420,34 @@ export class Editor {
     }
 
     async addBlockAfter(afterId) {
-        try {
-            const pageId = this.state.get('currentPageId');
-            const page = await db.getPage(pageId);
-            if (!page) return;
+        if (!this.currentPage) return;
 
-            const index = afterId ? page.blocks.findIndex(b => b.id === afterId) : -1;
+        try {
+            // 1. Sync current text from DOM to memory
+            this.syncState();
+
+            const index = afterId ? this.currentPage.blocks.findIndex(b => b.id === afterId) : -1;
+            const prevBlock = index !== -1 ? this.currentPage.blocks[index] : null;
+            
+            // Inherit list types
+            let newType = 'text';
+            if (prevBlock && ['bullet', 'number', 'todo'].includes(prevBlock.type)) {
+                newType = prevBlock.type;
+            }
+
             const newBlock = {
                 id: 'b-' + Math.random().toString(36).substr(2, 9),
-                type: 'text',
+                type: newType,
                 content: ''
             };
 
-            page.blocks.splice(index + 1, 0, newBlock);
-            await db.savePage(page);
-            this.renderBlocks(page.blocks);
+            this.currentPage.blocks.splice(index + 1, 0, newBlock);
+            
+            // 2. Save memory state
+            await db.savePage(this.currentPage);
+            
+            // 3. Re-render
+            this.renderBlocks(this.currentPage.blocks);
 
             setTimeout(() => {
                 const el = this.container.querySelector(`[data-id="${newBlock.id}"] .block-content`);
@@ -406,21 +459,27 @@ export class Editor {
     }
 
     async removeBlock(id) {
+        if (!this.currentPage) return;
+
         try {
-            const page = await db.getPage(this.state.get('currentPageId'));
-            if (!page) return;
-            const index = page.blocks.findIndex(b => b.id === id);
+            // 1. Sync current text from DOM to memory
+            this.syncState();
+
+            const index = this.currentPage.blocks.findIndex(b => b.id === id);
 
             if (index !== -1) {
-                const prevId = index > 0 ? page.blocks[index - 1].id : null;
-                page.blocks.splice(index, 1);
+                const prevId = index > 0 ? this.currentPage.blocks[index - 1].id : null;
+                this.currentPage.blocks.splice(index, 1);
 
-                if (page.blocks.length === 0) {
-                    page.blocks.push({ id: 'b-' + Math.random().toString(36).substr(2, 9), type: 'text', content: '' });
+                if (this.currentPage.blocks.length === 0) {
+                    this.currentPage.blocks.push({ id: 'b-' + Math.random().toString(36).substr(2, 9), type: 'text', content: '' });
                 }
 
-                await db.savePage(page);
-                this.renderBlocks(page.blocks);
+                // 2. Save memory state
+                await db.savePage(this.currentPage);
+                
+                // 3. Re-render
+                this.renderBlocks(this.currentPage.blocks);
 
                 if (prevId) {
                     setTimeout(() => {
@@ -442,42 +501,50 @@ export class Editor {
         }
     }
 
+    /**
+     * Synchronize DOM state to the in-memory currentPage object.
+     * Guaranteed to capture the latest text before any structural change.
+     */
+    syncState() {
+        if (!this.currentPage) return;
+
+        const blocks = Array.from(this.container.querySelectorAll('.block')).map(el => {
+            const type = el.dataset.type;
+            const contentEl = el.querySelector('.block-content');
+            const content = contentEl ? contentEl.innerHTML : '';
+            const checkbox = el.querySelector('.todo-checkbox');
+
+            const blockData = {
+                id: el.dataset.id,
+                type,
+                content
+            };
+
+            if (type === 'todo' && checkbox) {
+                blockData.checked = checkbox.checked;
+            }
+
+            if (type === 'canvas' && this.canvases.has(el.dataset.id)) {
+                blockData.elements = this.canvases.get(el.dataset.id).elements;
+            }
+
+            return blockData;
+        });
+
+        this.currentPage.title = this.titleEl.innerText;
+        this.currentPage.emoji = this.emojiEl.innerText;
+        this.currentPage.blocks = blocks;
+    }
+
     async savePage() {
-        if (!this.state.get('currentPageId')) return;
+        if (!this.currentPage) return;
 
         try {
-            const blocks = Array.from(this.container.querySelectorAll('.block')).map(el => {
-                const type = el.dataset.type;
-                const contentEl = el.querySelector('.block-content');
-                const content = contentEl ? contentEl.innerHTML : '';
-                const checkbox = el.querySelector('.todo-checkbox');
+            // Re-sync before saving to ensure latest typing is captured
+            this.syncState();
 
-                const blockData = {
-                    id: el.dataset.id,
-                    type,
-                    content
-                };
-
-                if (type === 'todo' && checkbox) {
-                    blockData.checked = checkbox.checked;
-                }
-
-                if (type === 'canvas' && this.canvases.has(el.dataset.id)) {
-                    blockData.elements = this.canvases.get(el.dataset.id).elements;
-                }
-
-                return blockData;
-            });
-
-            const page = await db.getPage(this.state.get('currentPageId'));
-            if (!page) return;
-
-            page.title = this.titleEl.innerText;
-            page.emoji = this.emojiEl.innerText;
-            page.blocks = blocks;
-
-            const success = await db.savePage(page);
-
+            const success = await db.savePage(this.currentPage);
+            
             // Update status
             if (this.saveStatusEl) {
                 this.saveStatusEl.textContent = success ? 'Saved' : 'Save failed';

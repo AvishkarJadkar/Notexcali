@@ -15,6 +15,8 @@ export class SlashMenu {
             { id: 'h1', label: 'Heading 1', icon: 'heading-1', desc: 'Large section heading.' },
             { id: 'h2', label: 'Heading 2', icon: 'heading-2', desc: 'Medium section heading.' },
             { id: 'h3', label: 'Heading 3', icon: 'heading-3', desc: 'Small section heading.' },
+            { id: 'bullet', label: 'Bulleted List', icon: 'list', desc: 'Create a simple bulleted list.' },
+            { id: 'number', label: 'Numbered List', icon: 'list-ordered', desc: 'Create a list with numbering.' },
             { id: 'canvas', label: 'Drawing Canvas', icon: 'pen-tool', desc: 'Sketchy drawing canvas.' },
             { id: 'todo', label: 'To-do List', icon: 'check-square', desc: 'Track tasks with a checklist.' },
             { id: 'code', label: 'Code Block', icon: 'code', desc: 'Capture code snippets.' }
