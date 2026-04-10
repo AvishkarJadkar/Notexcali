@@ -224,6 +224,7 @@ export async function downloadPageAsPDF() {
         if (btn) {
             btn.innerHTML = btnOriginal;
             btn.disabled = false;
+            if (window.lucide) window.lucide.createIcons();
         }
     }
 }

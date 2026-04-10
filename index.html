@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notexcali — Notes & Illustrations</title>
     <meta name="description" content="A premium note-taking app with drawing capabilities. Organize ideas with blocks, sketches, and projects.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,6 +122,13 @@
     <script>
         // Initialize Lucide icons for the shell
         if (window.lucide) lucide.createIcons();
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('📱 Service Worker registered'))
+                .catch(err => console.warn('Service Worker registration failed:', err));
+        }
     </script>
 </body>
 </html>

@@ -111,7 +111,7 @@ export class Sidebar {
             const item = e.target.closest('.nav-item');
             if (item && !item.classList.contains('project-header')) {
                 const id = item.dataset.id;
-                if (id && id.startsWith('page-') || id === 'welcome-page') {
+                if (id && (id.startsWith('page-') || id === 'welcome-page')) {
                     this.state.set('currentPageId', id);
                     this.scheduleRender();
                 }
@@ -206,7 +206,7 @@ export class Sidebar {
                 title: 'Untitled',
                 emoji: '📄',
                 createdAt: Date.now(),
-                blocks: [{ id: 'b1', type: 'text', content: '' }]
+                blocks: [{ id: 'b-' + Math.random().toString(36).substr(2, 9), type: 'text', content: '' }]
             };
 
             await db.savePage(newPage);

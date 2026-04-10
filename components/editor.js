@@ -165,19 +165,19 @@ export class Editor {
             e.preventDefault();
             const draggedId = e.dataTransfer.getData('blockId');
             if (draggedId === block.id) return;
+            if (!this.currentPage) return;
 
             try {
-                const page = await db.getPage(this.state.get('currentPageId'));
-                if (!page) return;
-                const draggedIdx = page.blocks.findIndex(b => b.id === draggedId);
+                this.syncState();
+                const draggedIdx = this.currentPage.blocks.findIndex(b => b.id === draggedId);
 
                 if (draggedIdx !== -1) {
-                    const [draggedBlock] = page.blocks.splice(draggedIdx, 1);
-                    const newTargetIdx = page.blocks.findIndex(b => b.id === block.id);
-                    page.blocks.splice(newTargetIdx, 0, draggedBlock);
+                    const [draggedBlock] = this.currentPage.blocks.splice(draggedIdx, 1);
+                    const newTargetIdx = this.currentPage.blocks.findIndex(b => b.id === block.id);
+                    this.currentPage.blocks.splice(newTargetIdx, 0, draggedBlock);
 
-                    await db.savePage(page);
-                    this.renderBlocks(page.blocks);
+                    await db.savePage(this.currentPage);
+                    this.renderBlocks(this.currentPage.blocks);
                 }
             } catch (err) {
                 console.error('[Editor] Block drop failed:', err);
