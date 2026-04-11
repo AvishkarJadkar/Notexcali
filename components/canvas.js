@@ -103,14 +103,19 @@ export class DrawingCanvas {
 
     getPos(e) {
         const rect = this.canvas.getBoundingClientRect();
+        // Handle both MouseEvent and TouchEvent
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top
+            x: clientX - rect.left,
+            y: clientY - rect.top
         };
     }
 
     setupListeners(toolbar) {
         toolbar.addEventListener('mousedown', e => e.stopPropagation());
+        toolbar.addEventListener('touchstart', e => e.stopPropagation()); // Touch support
+        
         toolbar.addEventListener('click', async (e) => {
             const btn = e.target.closest('.tool-btn');
             if (btn) {
@@ -141,7 +146,13 @@ export class DrawingCanvas {
                 colorBtn.classList.add('active');
             }
         });
+        
+        // Listeners for drawing
         this.canvas.addEventListener('mousedown', (e) => this.startDrawing(e));
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent scrolling while drawing
+            this.startDrawing(e);
+        }, { passive: false });
     }
 
     startDrawing(e) {
@@ -158,8 +169,14 @@ export class DrawingCanvas {
                 points: [pos]
             };
         }
+        
+        // Mouse and Touch Move/Stop
         window.addEventListener('mousemove', this.handleMove);
+        window.addEventListener('touchmove', this.handleMove, { passive: false });
+        
         window.addEventListener('mouseup', this.handleStop);
+        window.addEventListener('touchend', this.handleStop);
+        window.addEventListener('touchcancel', this.handleStop);
     }
 
     draw(e) {
@@ -226,7 +243,11 @@ export class DrawingCanvas {
             this.save();
         }
         window.removeEventListener('mousemove', this.handleMove);
+        window.removeEventListener('touchmove', this.handleMove);
+        
         window.removeEventListener('mouseup', this.handleStop);
+        window.removeEventListener('touchend', this.handleStop);
+        window.removeEventListener('touchcancel', this.handleStop);
     }
 
     render() {

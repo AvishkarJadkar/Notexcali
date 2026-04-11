@@ -312,18 +312,9 @@ export class Editor {
                     }
                 }
 
-                // Slash command
-                if (e.key === '/') {
-                    const selection = window.getSelection();
-                    if (selection.rangeCount > 0) {
-                        const range = selection.getRangeAt(0);
-                        const rect = range.getBoundingClientRect();
-                        this.slashMenu.show(rect.left, rect.bottom + 8);
-                    }
-                } else {
-                    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter') {
-                        this.slashMenu.hide();
-                    }
+                // Hide slash menu on unrelated key presses
+                if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Enter' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                    this.slashMenu.hide();
                 }
 
                 // Backspace
@@ -341,7 +332,19 @@ export class Editor {
             });
         }
 
-        content.addEventListener('input', () => this.handleInput(block, content));
+        content.addEventListener('input', (e) => {
+            this.handleInput(block, content);
+
+            // Slash command detection for mobile (via input event)
+            if (e.data === '/') {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    this.slashMenu.show(rect.left, rect.bottom + 8);
+                }
+            }
+        });
         content.addEventListener('focus', () => {
             this.currentBlockId = block.id;
         });
