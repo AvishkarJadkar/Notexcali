@@ -1,6 +1,10 @@
 # Notexcali 📒
 
 Notexcali is a simple and intuitive note-taking and drawing application that combines the power of text notes + sketching (like Excalidraw) in one place. It allows users to create, edit, and manage notes efficiently with a clean and user-friendly interface.
+It is extremely lightweight and does have cross-platform compatibility.
+You can login to notexcali with your google account and start using on your mobile phone and laptop
+
+live at - `avishkarjadkar.github.io/Notexcali/`
 
 ## Features 🚀
 - **Block-based Editor**: Type `/` for commands (Headings, Text, Canvas, etc.)
