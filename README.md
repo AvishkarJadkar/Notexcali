@@ -3,24 +3,34 @@
 
 Notexcali is a premium, lightweight, block-based editor that seamlessly combines the structured organization of **Notion** with the creative freedom of **Excalidraw**. Built for speed and simplicity, it allows you to capture ideas in text and sketches—all in a single, beautiful interface.
 
-[Live Demo](https://avishkarjadkar.github.io/Notexcali/) | [Report Bug](https://github.com/AvishkarJadkar/Notexcali/issues)
+Notes like Notion, creativity like Excalidraw — all in one lightning-fast workspace.
+Think, write, sketch, and build ideas instantly without the clutter. 
+
+[Live At](https://avishkarjadkar.github.io/Notexcali/) | [Report Bug](https://github.com/AvishkarJadkar/Notexcali/issues)
 
 ---
 
 ## 📸 Preview
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x450?text=Notexcali+Desktop+View" alt="Notexcali Desktop Screenshot" width="800">
+  <img src="https://via.placeholder.com/800x450?text=Notexcali+Desktop+View" alt="" width="800">
   <br>
-  <em>[Insert your desktop screenshot here]</em>
+  <em><img width="1918" height="970" alt="Screenshot 2026-04-11 231050" src="https://github.com/user-attachments/assets/dd439029-7eaf-4b29-9310-812cdfc9921d" />
+</em>
+  <em><img width="1917" height="970" alt="Screenshot 2026-04-11 231344" src="https://github.com/user-attachments/assets/55a13e36-1dbf-4945-a65b-1d06bee58d9d" />
+</em>
 </div>
 
 <div align="center">
   <br>
-  <img src="https://via.placeholder.com/250x500?text=Notexcali+Mobile" alt="Notexcali Mobile View" width="250">
-  <img src="https://via.placeholder.com/250x500?text=Drawing+Canvas" alt="Notexcali Drawing" width="250" style="margin-left: 20px;">
+  <img src="https://via.placeholder.com/250x500?text=Notexcali+Mobile" alt="" width="250">
+  <img src="https://via.placeholder.com/250x500?text=Drawing+Canvas" alt="" width="250" style="margin-left: 20px;">
   <br>
-  <em>[Insert your mobile & drawing screenshots here]</em>
+  <em><img width="426" height="502" alt="Screenshot 2026-04-11 231204" src="https://github.com/user-attachments/assets/6e0236de-117c-467f-b0bc-cffc78964a1a" />
+</em>
+  <em><img width="1913" height="953" alt="Screenshot 2026-04-11 231316" src="https://github.com/user-attachments/assets/bc6ee33a-e050-4c6e-bdac-8c0b1d938896" />
+</em>
+  
 </div>
 
 ---
@@ -90,7 +100,6 @@ Since Notexcali uses pure ES Modules, you can run it locally with any simple sta
 
 **Avishkar Jadkar**
 - [GitHub](https://github.com/AvishkarJadkar)
-- [Portfolio](https://github.com/AvishkarJadkar)
 
 ---
 
