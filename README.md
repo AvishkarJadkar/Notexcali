@@ -15,20 +15,19 @@ Think, write, sketch, and build ideas instantly without the clutter.
 <div align="center">
   <img src="https://via.placeholder.com/800x450?text=Notexcali+Desktop+View" alt="" width="800">
   <br>
-  <em><img width="1918" height="970" alt="Screenshot 2026-04-11 231050" src="https://github.com/user-attachments/assets/dd439029-7eaf-4b29-9310-812cdfc9921d" />
+  <em><img width="1917" height="967" alt="Screenshot 2026-04-11 231050" src="https://github.com/user-attachments/assets/bd4ee642-0c15-467a-b07b-5566b4fd4e60" />
 </em>
-  <em><img width="1917" height="970" alt="Screenshot 2026-04-11 231344" src="https://github.com/user-attachments/assets/55a13e36-1dbf-4945-a65b-1d06bee58d9d" />
+  <em><img width="1917" height="970" alt="Screenshot 2026-04-11 233931" src="https://github.com/user-attachments/assets/749eb43f-55b3-4d96-ba66-6fb9b3838630" />
+
 </em>
 </div>
 
 <div align="center">
   <br>
-  <img src="https://via.placeholder.com/250x500?text=Notexcali+Mobile" alt="" width="250">
+  <img src="https://via.placeholder.com/250x500?text=Notexcali+Mobile" alt="downloaded pdf screenshot" width="250">
   <img src="https://via.placeholder.com/250x500?text=Drawing+Canvas" alt="" width="250" style="margin-left: 20px;">
   <br>
-  <em><img width="426" height="502" alt="Screenshot 2026-04-11 231204" src="https://github.com/user-attachments/assets/6e0236de-117c-467f-b0bc-cffc78964a1a" />
-</em>
-  <em><img width="1913" height="953" alt="Screenshot 2026-04-11 231316" src="https://github.com/user-attachments/assets/bc6ee33a-e050-4c6e-bdac-8c0b1d938896" />
+  <em><img width="565" height="897" alt="Screenshot 2026-04-11 234024" src="https://github.com/user-attachments/assets/84df6c64-67e0-45fb-ae01-ec0d142adc9d" />
 </em>
   
 </div>
