@@ -12,7 +12,8 @@ const firebaseConfig = {
     projectId: "notexcali",
     storageBucket: "notexcali.firebasestorage.app",
     messagingSenderId: "166506299843",
-    appId: "1:166506299843:web:f45f3507496b23edaf3d76"
+    appId: "1:166506299843:web:f45f3507496b23edaf3d76",
+    measurementId: "G-KE8L49C3PL"
 };
 
 const app = initializeApp(firebaseConfig);
