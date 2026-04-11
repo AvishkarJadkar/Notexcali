@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notexcali-v1';
+const CACHE_NAME = 'notexcali-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -10,11 +10,22 @@ const ASSETS = [
   './components/menu.js',
   './components/search.js',
   './components/emoji-picker.js',
+  './utils/firebase.js',
+  './utils/auth.js',
   './utils/db.js',
   './utils/state.js',
   './utils/helpers.js',
   './utils/confirm.js',
   './utils/toast.js'
+];
+
+// Firebase API domains that must NEVER be cached
+const FIREBASE_DOMAINS = [
+  'firestore.googleapis.com',
+  'identitytoolkit.googleapis.com',
+  'securetoken.googleapis.com',
+  'www.googleapis.com',
+  'accounts.google.com'
 ];
 
 // Install — cache core app shell
@@ -39,14 +50,18 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch — network first, fallback to cache (best for a notes app)
+// Fetch — network first, fallback to cache
 self.addEventListener('fetch', (e) => {
-  // Skip non-GET and CDN requests (let them go to network always)
   if (e.request.method !== 'GET') return;
-  
+
   const url = new URL(e.request.url);
-  
-  // For CDN resources (fonts, libraries), use cache-first
+
+  // NEVER cache Firebase API calls — they must always go to the network
+  if (FIREBASE_DOMAINS.some(domain => url.hostname.includes(domain))) {
+    return; // Let the browser handle it normally
+  }
+
+  // For CDN resources (fonts, libraries, Firebase SDK), use cache-first
   if (url.origin !== location.origin) {
     e.respondWith(
       caches.match(e.request).then(cached => {
