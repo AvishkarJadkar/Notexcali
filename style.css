@@ -365,6 +365,7 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
+    white-space: nowrap;
 }
 
 .save-status.saving {
@@ -1422,6 +1423,40 @@ pre[class*="language-"] {
     }
     .auth-card {
         padding: 36px 24px;
+        border: none;
+        box-shadow: none;
+        width: 100%;
+    }
+    .header-right .btn span,
+    .save-status span {
+        display: none;
+    }
+    .header-breadcrumb {
+        max-width: 80px;
+    }
+    .header-right {
+        gap: 4px;
+    }
+    .user-menu {
+        padding-left: 4px;
+        gap: 2px;
+    }
+}
+
+/* Sidebar Backdrop for Mobile */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(2px);
+    z-index: 9998;
+    animation: fadeIn 200ms ease;
+}
+
+@media (max-width: 768px) {
+    .sidebar:not(.collapsed) ~ .sidebar-backdrop {
+        display: block;
     }
 }
 

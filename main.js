@@ -118,9 +118,17 @@ class App {
         // Sidebar Toggle
         const sidebarToggle = document.getElementById('toggle-sidebar');
         const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('collapsed');
+            });
+        }
+
+        if (backdrop && sidebar) {
+            backdrop.addEventListener('click', () => {
+                sidebar.classList.add('collapsed');
             });
         }
 
