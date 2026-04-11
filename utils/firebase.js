@@ -7,13 +7,13 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-aut
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC9sD7P40zi0PCp4AtE0dAS8gvgjhuOHz0",
-    authDomain: "notexcali.firebaseapp.com",
-    projectId: "notexcali",
-    storageBucket: "notexcali.firebasestorage.app",
-    messagingSenderId: "166506299843",
-    appId: "1:166506299843:web:f45f3507496b23edaf3d76",
-    measurementId: "G-KE8L49C3PL"
+    apiKey: "FIREBASE_API_KEY_PLACEHOLDER",
+    authDomain: "FIREBASE_AUTH_DOMAIN_PLACEHOLDER",
+    projectId: "FIREBASE_PROJECT_ID_PLACEHOLDER",
+    storageBucket: "FIREBASE_STORAGE_BUCKET_PLACEHOLDER",
+    messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID_PLACEHOLDER",
+    appId: "FIREBASE_APP_ID_PLACEHOLDER",
+    measurementId: "FIREBASE_MEASUREMENT_ID_PLACEHOLDER"
 };
 
 const app = initializeApp(firebaseConfig);
