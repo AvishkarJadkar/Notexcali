@@ -1,46 +1,99 @@
-# Notexcali 📒
+# Notexcali ⚡
+**The hybrid workspace for thinkers, designers, and organizers.**
 
-Notexcali is a simple and intuitive note-taking and drawing application that combines the power of text notes + sketching (like Excalidraw) in one place. It allows users to create, edit, and manage notes efficiently with a clean and user-friendly interface.
-It is extremely lightweight and does have cross-platform compatibility.
-You can login to notexcali with your google account and start using on your mobile phone and laptop
+Notexcali is a premium, lightweight, block-based editor that seamlessly combines the structured organization of **Notion** with the creative freedom of **Excalidraw**. Built for speed and simplicity, it allows you to capture ideas in text and sketches—all in a single, beautiful interface.
 
-live at - `avishkarjadkar.github.io/Notexcali/`
+[Live Demo](https://avishkarjadkar.github.io/Notexcali/) | [Report Bug](https://github.com/AvishkarJadkar/Notexcali/issues)
 
-## Features 🚀
-- **Block-based Editor**: Type `/` for commands (Headings, Text, Canvas, etc.)
-- **Hand-drawn Canvas**: Sketch ideas directly in your notes using Rough.js.
-- **Local-first**: Data is saved in your browser's IndexedDB.
-- **Ultra-lightweight**: No `node_modules` required.
+---
 
-## How to Run
-Since this app uses ES Modules, you need a local server to run it.
+## 📸 Preview
 
-1. Open a terminal in this directory.
-2. Run any local server, for example:
+<div align="center">
+  <img src="https://via.placeholder.com/800x450?text=Notexcali+Desktop+View" alt="Notexcali Desktop Screenshot" width="800">
+  <br>
+  <em>[Insert your desktop screenshot here]</em>
+</div>
+
+<div align="center">
+  <br>
+  <img src="https://via.placeholder.com/250x500?text=Notexcali+Mobile" alt="Notexcali Mobile View" width="250">
+  <img src="https://via.placeholder.com/250x500?text=Drawing+Canvas" alt="Notexcali Drawing" width="250" style="margin-left: 20px;">
+  <br>
+  <em>[Insert your mobile & drawing screenshots here]</em>
+</div>
+
+---
+
+## ✨ Core Features
+
+- **🧱 Block-Based Editor**: A familiar, powerful command-driven editor. Just type `/` to insert headings, lists, code snippets, or drawing canvases.
+- **🎨 Hand-Drawn Canvas**: Deeply integrated sketching tool powered by **Rough.js**. Create wireframes, diagrams, or doodles directly inside your notes.
+- **☁️ Multi-User Cloud Sync**: Securely sign in with **Google**. Your notes are saved in the cloud (Firebase) and sync across your phone and laptop instantly.
+- **📱 Mobile-First Design**: Optimized for touch. From specific mobile-keyboard command triggers to "tap-to-dismiss" sidebars, Notexcali feels like a native app on your phone.
+- **🌓 Adaptive Theme**: Sleek Dark and Light modes that respect your system preferences.
+- **📄 PDF Export**: Professional-grade PDF generation that preserves your layout and hand-drawn illustrations perfectly.
+- **📂 Project Organization**: Organize your workspace with nested pages and projects for a clean, distraction-free experience.
+- **📶 PWA Ready**: Install Notexcali as an app on your device for offline support and a premium desktop/mobile feel.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Vanilla JS (ES Modules), HTML5, CSS3 (Modern Flex/Grid)
+- **Database**: Firebase Firestore (NoSQL)
+- **Auth**: Firebase Authentication (Google OAuth)
+- **Styling**: Rough.js (Sketchy UI), Lucide Icons, Prism.js (Syntax Highlighting)
+- **Export**: html2pdf.js
+
+---
+
+## 🚀 Getting Started
+
+Since Notexcali uses pure ES Modules, you can run it locally with any simple static server.
+
+1. **Clone the Repo**:
+   ```bash
+   git clone https://github.com/AvishkarJadkar/Notexcali.git
+   ```
+2. **Launch locally**:
    ```bash
    npx serve .
    ```
-   *Note: This `npx` command is temporary and won't install large libraries permanently on your machine.*
-3. Open the URL shown (usually `http://localhost:3000`).
+3. **Configure Firebase**:
+   Copy your `firebaseConfig` into `utils/firebase.js` (or use the injected GitHub Secrets for deployment).
 
-## Keyboard Shortcuts
-- `Ctrl + \`: Toggle Sidebar
-- `Ctrl + N`: New Page
-- `Ctrl + K`: Quick Search
-- `Enter`: New Block
-- `Backspace`: Delete Empty Block
-- `/`: Open Command Menu
+---
 
-## 📌 Future Improvements
-- 🔐 User authentication
-- ☁️ Cloud storage support
-- 📱 Mobile responsiveness
-- 🤝 Real-time collaboration
-- 🧠 AI-based note suggestions
+## ⌨️ Keyboard Shortcuts
 
-# 📄 License
-This project is licensed under the MIT License.
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + \` | Toggle Sidebar |
+| `Ctrl + N` | New Page |
+| `Ctrl + K` | Quick Search |
+| `Enter` | Create New Block |
+| `/` | Open Command Menu |
 
-# 👨‍💻 Author
-Avishkar Jadkar
-https://github.com/AvishkarJadkar
+---
+
+## 🛣️ Roadmap
+
+- [ ] 🤝 Real-time collaboration.
+- [ ] 🧠 AI-powered content summaries.
+- [ ] 🏗️ More block types (Tables, Embeds).
+- [ ] 📂 Folder-in-folder nesting.
+
+---
+
+## 👨‍💻 Author
+
+**Avishkar Jadkar**
+- [GitHub](https://github.com/AvishkarJadkar)
+- [Portfolio](https://github.com/AvishkarJadkar)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
