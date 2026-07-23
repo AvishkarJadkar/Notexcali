@@ -6,6 +6,7 @@ import { Sidebar } from './sidebar.js';
 import { Editor } from './components/editor.js';
 import { SearchModal } from './components/search.js';
 import { setupShortcuts, exportData, downloadPageAsPDF } from './utils/helpers.js';
+import { showToast } from './utils/toast.js';
 
 console.log('🚀 Notexcali Initializing...');
 
@@ -43,6 +44,7 @@ class App {
                     loginBtn.disabled = false;
                     if (loginBtnText) loginBtnText.textContent = 'Sign in with Google';
                     console.error('Sign-in failed:', err);
+                    showToast('Sign-in failed. Please verify your Firebase configuration.', 'error');
                 }
             });
         }

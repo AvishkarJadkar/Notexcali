@@ -37,3 +37,4 @@ export function onAuthChange(callback) {
 export function getCurrentUser() {
     return auth.currentUser;
 }
+
