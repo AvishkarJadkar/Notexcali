@@ -35,9 +35,17 @@ class App {
 
         // Process any pending Google redirect result on page load
         handleRedirectResult().catch((err) => {
+            console.error('[Auth] Redirect error:', err.code, err.message);
             if (loginBtn) loginBtn.disabled = false;
             if (loginBtnText) loginBtnText.textContent = 'Sign in with Google';
-            showToast('Sign-in failed: ' + (err.message || 'Unknown error'), 'error');
+
+            // Show error in auth card so it's impossible to miss
+            const tagline = document.querySelector('.auth-tagline');
+            if (tagline) {
+                tagline.style.color = '#e06c75';
+                tagline.textContent = `Error: ${err.code || err.message}`;
+            }
+            showToast('Sign-in failed: ' + (err.code || err.message), 'error', 8000);
         });
 
         // Google Sign-In click — triggers full-page redirect to Google
