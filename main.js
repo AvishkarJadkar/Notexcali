@@ -1,5 +1,5 @@
 // Notexcali - Main Entry Point (with Firebase Auth)
-import { onAuthChange, signInWithGoogle, signOut } from './utils/auth.js';
+import { onAuthChange, signInWithGoogle, signOut, handleRedirectResult } from './utils/auth.js';
 import { initializeDB, db, setCurrentUser } from './utils/db.js';
 import { State } from './utils/state.js';
 import { Sidebar } from './sidebar.js';
@@ -33,18 +33,25 @@ class App {
         const loginBtnText = document.getElementById('signin-text');
         const loadingScreen = document.getElementById('loading-screen');
 
-        // Google Sign-In click
+        // Process any pending Google redirect result on page load
+        handleRedirectResult().catch((err) => {
+            if (loginBtn) loginBtn.disabled = false;
+            if (loginBtnText) loginBtnText.textContent = 'Sign in with Google';
+            showToast('Sign-in failed: ' + (err.message || 'Unknown error'), 'error');
+        });
+
+        // Google Sign-In click — triggers full-page redirect to Google
         if (loginBtn) {
             loginBtn.addEventListener('click', async () => {
                 try {
                     loginBtn.disabled = true;
-                    if (loginBtnText) loginBtnText.textContent = 'Signing in...';
+                    if (loginBtnText) loginBtnText.textContent = 'Redirecting to Google...';
                     await signInWithGoogle();
                 } catch (err) {
                     loginBtn.disabled = false;
                     if (loginBtnText) loginBtnText.textContent = 'Sign in with Google';
                     console.error('Sign-in failed:', err);
-                    showToast('Sign-in failed. Please verify your Firebase configuration.', 'error');
+                    showToast('Sign-in failed: ' + (err.message || 'Try again'), 'error');
                 }
             });
         }
