@@ -1,7 +1,7 @@
 const CACHE_NAME = 'notexcali-v2';
 const ASSETS = [
   './',
-  './index.html',
+  './app.html',
   './style.css',
   './main.js',
   './sidebar.js',

@@ -2,7 +2,7 @@
   "name": "Notexcali",
   "short_name": "Notexcali",
   "description": "A premium note-taking app with drawing capabilities.",
-  "start_url": "./index.html",
+  "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a1a1a",
